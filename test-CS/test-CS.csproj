@@ -63,7 +63,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RepCid\RepCid.csproj">
+    <ProjectReference Include="..\..\Gerenciador_REP\RepCid\RepCid\RepCid.csproj">
       <Project>{82e07b6b-5c55-4596-9461-c89a91d7d857}</Project>
       <Name>RepCid</Name>
     </ProjectReference>
