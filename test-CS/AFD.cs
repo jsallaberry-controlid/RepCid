@@ -20,14 +20,21 @@ namespace RepTestAPI
         [TestMethod, TestCategory("RepCid")]
         public void AFD_Completo()
         {
-            if (rep.BuscarAFD(0))
+            Console.Write(rep.ObterCompletoAFD());
+        }
+
+        [TestMethod, TestCategory("RepCid")]
+        public void AFD_Parcial()
+        {
+            if (rep.BuscarAFD(50))
             {
                 string sLinha;
                 int n = 0;
+                // A leitura de linha sempre vem com \r\n
                 while (rep.LerAFD(out sLinha))
                 {
                     n++;
-                    Console.WriteLine(sLinha);
+                    Console.Write(sLinha);
                 }
                 Console.WriteLine("\nTotal: " + n);
             }
@@ -36,7 +43,6 @@ namespace RepTestAPI
                 Console.WriteLine(rep.LastLog());
                 Assert.Fail("Erro ao Buscar AFD");
             }
-                
         }
     }
 }

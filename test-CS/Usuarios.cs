@@ -71,7 +71,8 @@ namespace RepTestAPI
                 Assert.Inconclusive("Não há PIS registrado para obter um template");
         }
 
-        string cNome = "";
+        string cNome = " X ";
+
         [TestMethod, TestCategory("RepCid")]
         public void Usuario_CRUD_Loop()
         {

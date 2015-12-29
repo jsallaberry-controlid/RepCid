@@ -12,7 +12,7 @@ namespace RepTestAPI
         static RepCid rep;
 
         //public static readonly string repIP = "192.168.1.102"; // iDX
-        public static readonly string repIP = "192.168.2.112"; // iDClass
+        public static readonly string repIP = "192.168.2.115"; // iDClass
         //public static readonly int repPort = 1818; // iDX
         public static readonly int repPort = 443; // iDClass
         public static readonly string repLogin = "admin";
@@ -76,7 +76,8 @@ namespace RepTestAPI
         [TestMethod, TestCategory("RepCid")]
         public void Config_SetDateTime()
         {
-            //            Assert.IsTrue(rep.GravarDataHora(DateTime.Now.AddDays(-1).AddMinutes(-33)), "Erro ao gravar Data/Hora no REP");
+            // Assert.IsTrue(rep.GravarDataHora(DateTime.Now.AddDays(-1).AddMinutes(-33)), "Erro ao gravar Data/Hora no REP");
+            // Vale lembrar que dependendo do teste a sessão pode expirar se o horario mudar mais de 4 horas de diferença
             Assert.IsTrue(rep.GravarDataHora(DateTime.Now), "Erro ao gravar Data/Hora no REP");
         }
 
@@ -101,7 +102,7 @@ namespace RepTestAPI
         public void Config_SetHorarioVerao()
         {
             bool gravou;
-            if (rep.GravarConfigHVerao(2016, 6, 1, 2017, 8, 10, out gravou) && gravou)
+            if (rep.GravarConfigHVerao(2017, 6, 5, 2018, 7, 6, out gravou) && gravou)
                 Console.WriteLine("Horário de Verão gravado");
             else
             {
@@ -143,6 +144,8 @@ namespace RepTestAPI
         [TestMethod, TestCategory("RepCid")]
         public void Config_NetworkSet()
         {
+            /*
+            
             bool gravou;
             string ip = repIP; // "192.168.0.147";
             ushort port = (ushort)repPort;
@@ -158,7 +161,7 @@ namespace RepTestAPI
                 if (rep.Conectar(ip, newPort) == RepCid.ErrosRep.OK)
                 {
                     Console.WriteLine("Conectado ao novo IP");
-                    if (rep.GravarConfigRede(repIP, "255.255.254.0", "192.168.0.1", port, out gravou) && gravou)
+                    if (rep.GravarConfigRede(repIP, "255.255.128.0", "192.168.0.1", port, out gravou) && gravou)
                     {
                         Thread.Sleep(ip == repIP ? 5000 : 30000); // tempo para o ip mudar...
                         Console.WriteLine("Voltou ao IP padrão");
@@ -171,6 +174,8 @@ namespace RepTestAPI
             }
             else
                 Assert.Fail("Erro ao mudar configuração de rede");
+            
+            */
         }
     }
 }

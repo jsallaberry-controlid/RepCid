@@ -14,7 +14,7 @@ namespace RepTestAPI
         [TestMethod, TestCategory("RepCid")]
         public void ConnectLoop()
         {
-            int tries = 1000;
+            int tries = 10;
             Console.WriteLine("Tentando se conectar {0} vezes com REP no endereço {1}:{2}", tries, Config.repIP, Config.repPort);
             RepCid rep = new RepCid();
             int idle = 0;
