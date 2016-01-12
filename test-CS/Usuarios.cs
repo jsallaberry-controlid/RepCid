@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Controlid;
 using Controlid.iDClass;
+using System.Data;
 
 namespace RepTestAPI
 {
@@ -51,6 +52,38 @@ namespace RepTestAPI
 
             if (PisTemplate > 0)
                 Console.WriteLine("\r\nPisTemplate para teste: " + PisTemplate);
+        }
+
+        [TestMethod, TestCategory("RepCid")]
+        public void Usuario_Counts()
+        {
+            int countUsr;
+            if (rep.CarregarUsuarios(true, out countUsr))
+            {
+                int countDig = 0;
+                int countAdm = 0;
+                int countSenha = 0;
+                int countRfid = 0;
+                int countBarras = 0;
+                foreach (DataRow row in rep.Usuarios.Rows)
+                {
+                    countDig += Convert.ToInt32(row["NUM_DIG"]);
+
+                    if (row["PRIV"].ToString().Equals("1"))
+                        countAdm++;
+
+                    if (!row["CODIGO"].ToString().Equals("0"))
+                        countSenha++;
+
+                    if (!row["RFID"].ToString().Equals("0"))
+                        countRfid++;
+
+                    if (!string.IsNullOrWhiteSpace(row["BARRAS"].ToString()))
+                        countBarras++;
+
+                }
+                Console.WriteLine(string.Format("{0} Usuários, {1} Admin, {2} Senhas, {3} RfId, {4} Barras, {5} Digitais", countUsr, countAdm, countSenha, countRfid, countBarras, countDig));
+            }
         }
 
         [TestMethod, TestCategory("RepCid")]
