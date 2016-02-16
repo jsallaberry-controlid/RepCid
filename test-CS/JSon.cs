@@ -20,8 +20,7 @@ namespace RepTestAPI
         [TestMethod, TestCategory("API")]
         public void TestParseResult()
         {
-            string html = @"17:10:35 RECV 192.168.0.145:49799 65536
-HTTP/1.1 200 OK
+            string html = @"HTTP/1.1 200 OK
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Headers: origin, x-csrftoken, content-type, accept
 Vary: Origin
@@ -31,8 +30,7 @@ Content-Length: 90
 
 {""mac"":""02:31:37:26:32:45"",""nSerie"":""00014000010000001"",""versionFW"":536,""versionMRP"":1048}";
 
-            AboutResult ar = (AboutResult)RestJSON.JsonFrom(Encoding.UTF8.GetBytes(html), typeof(AboutResult));
-
+            AboutResult ar = RestJSON.JsonFrom<AboutResult>(Encoding.UTF8.GetBytes(html));
             Console.WriteLine(string.Format("Serie: {0} FW: {1} MRP: {2}", ar.NumeroSerie, ar.VersionFW, ar.VersionMRP));
         }
     }

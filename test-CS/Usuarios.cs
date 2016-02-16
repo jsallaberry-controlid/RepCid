@@ -36,6 +36,7 @@ namespace RepTestAPI
             int privilegios;
             int ndig;
             int nCount = 0;
+            int nDelete = 0;
             PisTemplate = 0;
             while (rep.LerUsuario(out pis, out nome, out codigo, out senha, out barras, out rfid, out privilegios, out ndig))
             {
@@ -48,7 +49,14 @@ namespace RepTestAPI
                     ndig == 0 ? "" : (" BIO:" + ndig)));
                 if (PisTemplate == 0 && ndig > 0)
                     PisTemplate = pis;
+
+                //bool r;
+                //if(rep.RemoverUsuario(pis, out r) && r)
+                //    nDelete++;
             }
+
+            if(nDelete>0)
+                Console.WriteLine("\r\nUsuários Removidos: " + nDelete);
 
             if (PisTemplate > 0)
                 Console.WriteLine("\r\nPisTemplate para teste: " + PisTemplate);

@@ -26,7 +26,7 @@ namespace RepTestAPI
         [TestMethod, TestCategory("RepCid")]
         public void AFD_Parcial()
         {
-            if (rep.BuscarAFD(50))
+            if (rep.BuscarAFD(10))
             {
                 string sLinha;
                 int n = 0;
