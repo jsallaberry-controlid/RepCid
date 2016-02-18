@@ -1,3 +1,4 @@
 # RepCid
-Exemplos de uso da DLL de comunicação com REP iDX/iDClass
+Exemplos de uso da DLL de comunicação com os REPs iDClass e iDX.
+
 Para obter a RepCid.DLL entre em contato com nosso time de integração pelo nosso site www.controlid.com.br
