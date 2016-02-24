@@ -25,7 +25,7 @@ namespace RepTestAPI
             if (!rep.CarregarUsuarios(true, out qtd))
                 Assert.Fail("Erro ao carregar usuários");
 
-            Console.WriteLine("Usuários:" + qtd);
+            Console.WriteLine("Usuários: " + qtd);
 
             Int64 pis;
             string nome;
@@ -223,7 +223,7 @@ namespace RepTestAPI
 
             uur.Usuario[0].Templates = new string[] { template_iDClass };
 
-            StatusResult st = (StatusResult)RestJSON.SendJson(rep.IP, uur, typeof(StatusResult), rep.iDClassSession);
+            StatusResult st = RestJSON.SendJson<StatusResult>(rep.IP, uur, rep.iDClassSession);
             if (!st.isOK)
                 Assert.Inconclusive(st.Status);
 
@@ -250,8 +250,8 @@ namespace RepTestAPI
             uur.Usuario[0].PIS = 108;
             uur.Usuario[0].PIS2 = 223344;
             uur.Usuario[0].Nome = "Teste Change PIS (com template)";
-            
-            StatusResult st = (StatusResult)RestJSON.SendJson(rep.IP, uur, typeof(StatusResult), rep.iDClassSession);
+
+            StatusResult st = RestJSON.SendJson<StatusResult>(rep.IP, uur, rep.iDClassSession);
             if (!st.isOK)
                 Assert.Inconclusive(st.Status);
 
