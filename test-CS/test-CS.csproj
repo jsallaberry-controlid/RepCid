@@ -54,6 +54,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Connect.cs" />
+    <Compile Include="iDClass.cs" />
     <Compile Include="ThreadSafe.cs" />
     <Compile Include="JSon.cs" />
     <Compile Include="Config.cs" />

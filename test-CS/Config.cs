@@ -12,7 +12,7 @@ namespace RepTestAPI
         static RepCid rep;
 
         //public static readonly string repIP = "192.168.1.102"; // iDX
-        public static readonly string repIP = "192.168.0.19"; // iDClass
+        public static readonly string repIP = "192.168.2.185"; // iDClass
         //public static readonly int repPort = 1818; // iDX
         public static readonly int repPort = 443; // iDClass
         public static readonly string repLogin = "admin";
