@@ -115,7 +115,7 @@ namespace TestFutronic
             try
             {
                 quality = -1;
-                if (Session == null)
+                if (Session == null || digital == null)
                     return null;
                 else
                     return Convert.ToBase64String(RestJSON.RequestTemplate(IP, RestJSON.GetBytes(digital), digital.Width, digital.Height, Session, out quality));
@@ -128,25 +128,27 @@ namespace TestFutronic
             }
         }
 
-        public string MergeTemplate(string template1, string template2, string template3)
+        public string MergeTemplate(string[] templates, out string info)
         {
+            info = "?";
             try
             {
-                if (Session == null)
+                if (Session == null || templates == null || templates.Length != 3)
                     return null;
                 else
                 {
                     TemplateMergeResult tmr = RestJSON.SendJson<TemplateMergeResult>(IP, new TemplateMergeRequest()
                     {
-                        Templates = new string[] { template1, template2, template3 },
+                        Templates = new string[] { templates[0], templates[1], templates[2] },
                         Session = Session
                     });
+                    info = tmr.Status;
                     return tmr.Template;
                 }
             }
             catch (Exception ex)
             {
-                Status = ex.Message;
+                Status = info = ex.Message;
                 return null;
             }
         }

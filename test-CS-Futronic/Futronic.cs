@@ -37,6 +37,8 @@ namespace TestFutronic
             int nBrightnessOnDose4;
             _FTRSCAN_FAKE_REPLICA_PARAMETERS FakeReplicaParams;
             _FTRSCAN_FAKE_REPLICA_PARAMETERS Reserved;
+
+            public bool isOK { get { return nDose != -1; } } 
         }
 
         struct _FTRSCAN_IMAGE_SIZE
@@ -121,7 +123,14 @@ namespace TestFutronic
         public bool IsFinger()
         {
             var t = new _FTRSCAN_FRAME_PARAMETERS();
-            return ftrScanIsFingerPresent(device, out t);
+            bool dedo = ftrScanIsFingerPresent(device, out t);
+            if (!t.isOK)
+            {
+                Dispose();
+                return false;
+            }
+            else
+                return dedo;
         }
     }
 }

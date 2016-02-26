@@ -49,15 +49,16 @@ namespace TestFutronic
 
         void timer_Tick(object sender, EventArgs e)
         {
-            DateTime dt = DateTime.Now;
             try
             {
                 if (leitor.Connected)
                 {
+                    DateTime dt = DateTime.Now;
                     if (leitor.IsFinger())
                     {
                         using (Bitmap bmp = leitor.ExportBitMap())
                         {
+                            double t = DateTime.Now.Subtract(dt).TotalMilliseconds;
                             switch (dedo)
                             {
                                 case 1:
@@ -70,20 +71,30 @@ namespace TestFutronic
                                     dedo3.Source = bmp.ToBitmapSource();
                                     break;
                             }
-                            double t1 = DateTime.Now.Subtract(dt).TotalMilliseconds;
-                            txtLeitor.Text = string.Format("Captura da digital {0} - Tempo de obtenção: {1:0.0}ms", dedo, t1);
+                            txtLeitor.Text = string.Format("Captura da Digital {0} - Tempo de obtenção do leitor: {1:0.0}ms", dedo, t);
 
                             // Essa parte por ser remota costuma ser lenta
+                            dt = DateTime.Now;
                             int qualidade;
                             templates[dedo - 1] = rep.ExtractTemplate(bmp, out qualidade);
-                            double t2 = DateTime.Now.Subtract(dt).TotalMilliseconds;
+                            t = DateTime.Now.Subtract(dt).TotalMilliseconds;
+                            txtEquip.Text = string.Format("Qualidade do Template: {0}% - Tempo de transmissão: {1:0.0}ms", qualidade, t);
 
-                            txtEquip.Text = string.Format("Qualidade: {0}% - Tempo de transmissão: {1:0.0}ms", qualidade, t2 - t1);
+                            if (qualidade > 50)
+                                // vai para o proximo dedo se a qualidade for aceitável
+                                dedo++;
+                            else
+                                txtLeitor.Text += "\r\nQualidade muito baixa, coloque o dedo novamente";
 
-                            // vai para o proximo dedo
-                            dedo++;
                             if (dedo > 3)
+                            {
+                                dt = DateTime.Now;
+                                string info;
+                                rep.MergeTemplate(templates, out info);
+                                t = DateTime.Now.Subtract(dt).TotalMilliseconds;
+                                txtEquip.Text += string.Format("\r\nMerge Templates concluido: {0} - Tempo de transmissão: {1:0.0}ms", info, t);
                                 dedo = 1;
+                            }
                         }
                     }
                     //else
