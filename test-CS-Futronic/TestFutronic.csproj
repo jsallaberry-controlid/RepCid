@@ -70,7 +70,7 @@
     </Compile>
     <Compile Include="BitmapUtil.cs" />
     <Compile Include="Futronic.cs" />
-    <Compile Include="iDClass.cs" />
+    <Compile Include="Equipamento.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

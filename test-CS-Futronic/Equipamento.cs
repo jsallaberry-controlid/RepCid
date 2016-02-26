@@ -7,7 +7,7 @@ using System.Text;
 
 namespace TestFutronic
 {
-    #region Estruturas a serem usadas para iDClass
+    #region Estruturas a serem usadas para iDAccess / iDClass
 
     // {"login":"admin","password":"admin"}
     [DataContract(Name = "login")]
@@ -22,15 +22,13 @@ namespace TestFutronic
 
     // "{\"error\":\"Expectation failed\",\"code\":417}"
     [DataContract]
-    public class StatusResult
+    public class StatusResult // ErrorResult do sdk iDAccess
     {
         [DataMember(Name = "error")]
         public string Status;
 
         [DataMember(Name = "code")]
         public int Codigo;
-
-        public bool isOK { get { return Codigo == 200; } }
     }
 
     // {"session":"SoypLPHIBTjsnxICNBNmdDhs"}
@@ -76,32 +74,36 @@ namespace TestFutronic
 
     #endregion
 
-    public class iDClass
+    /// <summary>
+    /// Essa classe funciona tanto para REP iDClass como para controlador de Acesso iDAccess
+    /// </summary>
+    public class Equipamento
     {
-        private string IP, Session;
+        private string URL, Session;
         public string Status { get; private set; }
 
-        public bool Login(string ip, string user = "admin", string pass = "admin")
+        public bool Login(string url, string user = "admin", string pass = "admin")
         {
             try
             {
-                ConnectResult st = RestJSON.SendJson<ConnectResult>(IP = ip, new ConnectRequest()
+                if (!url.EndsWith("/"))
+                    url += "/";
+
+                ConnectResult st = RestJSON.Send<ConnectResult>(URL = url.ToLower(), new ConnectRequest()
                 {
                     Login = user,
                     Password = pass
                 });
 
-                if (st.isOK)
+                if (st.Session == null)
                 {
-                    Session = st.Session;
-                    Status = "REP Conectado";
-                    return true;
-                }
-                else
-                {
-                    Status = "REP Login: " + st.Status;
+                    Status = "Erro ao Conetar: " + st.Status ?? "?";
                     return false;
                 }
+
+                Session = st.Session;
+                Status = "Equipamento Conectado";
+                return true;
             }
             catch (Exception ex)
             {
@@ -118,7 +120,11 @@ namespace TestFutronic
                 if (Session == null || digital == null)
                     return null;
                 else
-                    return Convert.ToBase64String(RestJSON.RequestTemplate(IP, RestJSON.GetBytes(digital), digital.Width, digital.Height, Session, out quality));
+                {
+                    TemplateResult tr = RestJSON.Send<TemplateResult>(URL + "template_extract.fcgi?session=" + Session + "&width=" + digital.Width + "&height=" + digital.Height, RestJSON.GetBytes(digital));
+                    quality = tr.Qualidate;
+                    return tr.Template;
+                }
             }
             catch (Exception ex)
             {
@@ -137,13 +143,30 @@ namespace TestFutronic
                     return null;
                 else
                 {
-                    TemplateMergeResult tmr = RestJSON.SendJson<TemplateMergeResult>(IP, new TemplateMergeRequest()
+                    if (URL.StartsWith("https://"))
                     {
-                        Templates = new string[] { templates[0], templates[1], templates[2] },
-                        Session = Session
-                    });
-                    info = tmr.Status;
-                    return tmr.Template;
+                        // iDClass
+                        TemplateMergeResult tmr = RestJSON.Send<TemplateMergeResult>(URL, new TemplateMergeRequest()
+                        {
+                            Session = this.Session,
+                            Templates = new string[] { templates[0], templates[1], templates[2] }
+                        });
+                        info = tmr.Status ?? "OK";
+                        return tmr.Template;
+                    }
+                    else
+                    {
+                        List<byte> btRequest = new List<byte>();
+                        byte[] bt1 = Convert.FromBase64String(templates[0]);
+                        btRequest.AddRange(bt1);
+                        byte[] bt2 = Convert.FromBase64String(templates[1]);
+                        btRequest.AddRange(bt2);
+                        byte[] bt3 = Convert.FromBase64String(templates[2]);
+                        btRequest.AddRange(bt3);
+                        StatusResult st = RestJSON.Send<StatusResult>(URL + "template_match.fcgi?session=" + Session + "&size0=" + bt1.Length + "&size1=" + bt2.Length + "&size2=" + bt3.Length, btRequest.ToArray());
+                        info = st.Status ?? "OK";
+                        return null;
+                    }
                 }
             }
             catch (Exception ex)

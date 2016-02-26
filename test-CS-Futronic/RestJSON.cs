@@ -10,6 +10,8 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading.Tasks;
+using System.Drawing.Imaging;
 
 namespace TestFutronic
 {
@@ -41,12 +43,6 @@ namespace TestFutronic
     // .Net 4.5: JSON https://msdn.microsoft.com/pt-br/library/windows/apps/xaml/hh770289.aspx
     public class RestJSON
     {
-        /// <summary>
-        /// Encoder default do REP
-        /// </summary>
-        public static readonly Encoding DefaultEncode = Encoding.GetEncoding("ISO-8859-1");
-
-        // obrigatório para configurar o 'ServicePointManager' no primeiro uso
         static RestJSON()
         {
             // para não quebrar nenhum pacote
@@ -91,73 +87,100 @@ namespace TestFutronic
         }
 
         /// <summary>
-        /// Faz uma chamada JSON ao IP especificado serializando um objeto, e devolvendo outro do tipo esperado
+        /// Faz uma chamada JSON a URL especificada serializando um objeto, e devolvendo outro do tipo esperado
         /// </summary>
-        public static T SendJson<T>(string cIP, object objSend, string session = "")
+        public static T Send<T>(string cURL, object objSend = null)
         {
+            string cSend = null;
+            string cReceive = null;
             Type tpResult = typeof(T);
             object result;
             try
             {
-                string cURL = "https://" + cIP + "/";
-                string cCMD;
-                Type tpSend = objSend.GetType();
-                if (tpSend == typeof(string))
+                if (objSend != null)
                 {
-                    // Obtem o nome da chamada real
-                    cURL += objSend + ".fcgi";
-                    if (string.IsNullOrEmpty(session))
-                        cCMD = "{}";
-                    else
-                        cCMD = "{\"session\": \"" + session + "\"}";
+                    Type tpSend = objSend.GetType();
+                    DataContractAttribute dca = (DataContractAttribute)Attribute.GetCustomAttribute(tpSend, typeof(DataContractAttribute));
+                    if (dca != null)
+                        cURL += dca.Name + ".fcgi";
                 }
+
+                WebRequest request = WebRequest.Create(cURL);
+                if (tpResult == typeof(Byte[]) || tpResult == typeof(Bitmap))
+                    request.Method = "GET";
                 else
                 {
-                    DataContractAttribute dca = (DataContractAttribute)Attribute.GetCustomAttribute(tpSend, typeof(DataContractAttribute));
-                    cURL += dca.Name + ".fcgi";
-
-                    if (!string.IsNullOrEmpty(session) && tpSend.IsSubclassOf(typeof(SessionRequest)))
-                        ((SessionRequest)objSend).Session = session;
-
-                    // Serializa o Objeto em formato JSON em um buffer em memória
-                    using (MemoryStream ms = new MemoryStream())
+                    request.Method = "POST";
+                    using (var send = request.GetRequestStream())
                     {
-                        DataContractJsonSerializer jsonConnect = new DataContractJsonSerializer(tpSend);
-                        jsonConnect.WriteObject(ms, objSend);
-
-                        ms.Position = 0;
-                        using (StreamReader sr = new StreamReader(ms))
-                            cCMD = sr.ReadToEnd();
+                        if (objSend != null)
+                        {
+                            Type tpSend = objSend.GetType();
+                            if (tpSend == typeof(Bitmap))
+                            {
+                                request.ContentType = "application/octet-stream";
+                                ((Bitmap)objSend).Save(send, ImageFormat.Jpeg);
+                            }
+                            else if (tpSend == typeof(byte[]))
+                            {
+                                request.ContentType = "application/octet-stream";
+                                byte[] bt = (byte[])objSend;
+                                send.Write(bt, 0, bt.Length);
+                            }
+                            else
+                            {
+                                request.ContentType = "application/json";
+                                if (tpSend == typeof(string))
+                                {
+                                    Byte[] bt = UTF8Encoding.UTF8.GetBytes(cSend);
+                                    send.Write(bt, 0, bt.Length);
+                                }
+                                else
+                                    new DataContractJsonSerializer(tpSend).WriteObject(send, objSend);
+                            }
+                        }
                     }
                 }
 
-                // cCMD = "{login:\"admin\",password:\"admin\"}";
-                // Faz a chamada ao Serviço
-                WebRequest req = WebRequest.Create(cURL);
-                req.ContentType = "application/json";
-                req.Method = "POST";
-
-                using (StreamWriter stw = new StreamWriter(req.GetRequestStream()))
-                    // Lê o buffer para uma string e envia ao serviço via POST
-                    stw.Write(cCMD);
-
-                // Obtem a resposta e deserializa o objeto
-                using (HttpWebResponse response = (HttpWebResponse)req.GetResponse())
-                    result = new DataContractJsonSerializer(tpResult).ReadObject(response.GetResponseStream());
-
-                if (tpResult == typeof(StatusResult) || tpResult.IsSubclassOf(typeof(StatusResult)))
+                using (var response = request.GetResponse())
                 {
-                    if (((StatusResult)result).Codigo == 0 && ((StatusResult)result).Status == null)
+                    if (tpResult == typeof(Bitmap))
+                        result = Bitmap.FromStream(response.GetResponseStream());
+
+                    else if (tpResult == typeof(Byte[]))
                     {
-                        ((StatusResult)result).Codigo = 200;
-                        ((StatusResult)result).Status = "OK";
+                        List<byte> receive = new List<byte>();
+                        using (Stream str = response.GetResponseStream())
+                        {
+                            // Baixa em um cache de 4K 
+                            int nCount;
+                            byte[] cache = new byte[4096];
+                            while ((nCount = str.Read(cache, 0, cache.Length)) == cache.Length)
+                                receive.AddRange(cache);
+
+                            // Remove do cache a área extra
+                            if (nCount > 0 && nCount < cache.Length)
+                                receive.RemoveRange(cache.Length - nCount, nCount);
+                        }
+                        result = ((object)receive.ToArray());
+                    }
+                    else if (tpResult != typeof(string))
+                        result = new DataContractJsonSerializer(tpResult).ReadObject(response.GetResponseStream());
+                    else
+                    {
+                        using (StreamReader sr = new StreamReader(response.GetResponseStream()))
+                            cReceive = sr.ReadToEnd();
+
+                        result = ((object)cReceive);
                     }
                 }
             }
             catch (Exception ex)
             {
                 WebException wex = null;
-                if (ex is WebException)
+                if (tpResult == typeof(Bitmap))
+                    return (T)((object)null); // Sem imagem
+                else if (ex is WebException)
                     wex = (WebException)ex;
                 else if (ex.InnerException != null && ex.InnerException is WebException)
                     wex = (WebException)ex.InnerException;
@@ -167,7 +190,6 @@ namespace TestFutronic
                     if (wex.Response != null)
                     {
                         HttpWebResponse response = (HttpWebResponse)wex.Response;
-                        string cReceive = null;
                         using (StreamReader sr = new StreamReader(response.GetResponseStream()))
                             cReceive = sr.ReadToEnd();
 
@@ -175,57 +197,31 @@ namespace TestFutronic
                         {
                             try
                             {
-                                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(tpResult);
                                 using (MemoryStream ms = new MemoryStream())
                                 {
                                     byte[] bt = UTF8Encoding.UTF8.GetBytes(cReceive);
                                     ms.Write(bt, 0, bt.Length);
                                     ms.Position = 0;
-                                    result = deserializer.ReadObject(ms);
+                                    result = new DataContractJsonSerializer(tpResult).ReadObject(ms);
                                 }
                             }
                             catch (Exception)
                             {
-                                throw new Exception("ERRO JSON: " + cReceive, ex);
+                                throw new Exception("ERRO JSON", ex);
                             }
                         }
                         else
-                            throw new Exception("ERRO REQUEST: " + cReceive, ex);
+                            throw new Exception("ERRO RESPONSE: " + cReceive, ex);
                     }
                     else
-                        throw wex;
+                        throw new Exception("ERRO WEB", ex);
                 }
                 else
-                {
-                    throw new Exception("ERRO: ", ex);
-                }
+                    throw new Exception("ERRO GERAL", ex);
             }
             return (T)result;
         }
-
-        /// <summary>
-        /// Obtem um template de uma imagem serializada, usando um IDClass pelo IP
-        /// </summary>
-        public static byte[] RequestTemplate(string cIP, byte[] bt, int width, int height, string session, out int LastQuality)
-        {
-            string cURL = "https://" + cIP + "/template_extract.fcgi?session=" + session + "&width=" + width + "&height=" + height;
-            WebRequest req = WebRequest.Create(cURL);
-            req.ContentType = "application/octet-stream";
-            req.Method = "POST";
-
-            Stream stw = req.GetRequestStream();
-            stw.Write(bt, 0, bt.Length);
-
-            TemplateResult tpResult;
-            using (HttpWebResponse response = (HttpWebResponse)req.GetResponse())
-            {
-                DataContractJsonSerializer jsonResult = new DataContractJsonSerializer(typeof(TemplateResult));
-                tpResult = (TemplateResult)jsonResult.ReadObject(response.GetResponseStream());
-                LastQuality = tpResult.Qualidate;
-            }
-            return Convert.FromBase64String(tpResult.Template);
-        }
-
+        
         /// <summary>
         /// Obtem os bytes monocromaticos de uma imagem
         /// </summary>

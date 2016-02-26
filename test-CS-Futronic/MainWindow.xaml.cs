@@ -15,7 +15,7 @@ namespace TestFutronic
         DispatcherTimer timer; // timer que busca novos eventos a cada 1 segundo
         int dedo; // contado da posição do dedo
 
-        iDClass rep; // um REP na rede para fazer a extração e junção de templates
+        Equipamento equip; // um REP ou iDAccess na rede para fazer a extração e junção de templates
         string[] templates;
 
         public MainWindow()
@@ -25,7 +25,7 @@ namespace TestFutronic
             // meus componentes
             leitor = new Futronic();
             timer = new DispatcherTimer();
-            rep = new iDClass();
+            equip = new Equipamento();
             templates = new string[3]; // templates dos 3 dedos
         }
 
@@ -36,8 +36,10 @@ namespace TestFutronic
             timer.Tick += timer_Tick;
             timer.Start();
 
-            rep.Login("192.168.0.19");
-            txtEquip.Text = rep.Status;
+            equip.Login("https://192.168.0.19"); // REP iDClass (informar HTTPS é obrigatório)
+            //equip.Login("http://192.168.2.102"); // Controlador de acesso
+
+            txtEquip.Text = equip.Status;
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -76,7 +78,7 @@ namespace TestFutronic
                             // Essa parte por ser remota costuma ser lenta
                             dt = DateTime.Now;
                             int qualidade;
-                            templates[dedo - 1] = rep.ExtractTemplate(bmp, out qualidade);
+                            templates[dedo - 1] = equip.ExtractTemplate(bmp, out qualidade);
                             t = DateTime.Now.Subtract(dt).TotalMilliseconds;
                             txtEquip.Text = string.Format("Qualidade do Template: {0}% - Tempo de transmissão: {1:0.0}ms", qualidade, t);
 
@@ -90,7 +92,7 @@ namespace TestFutronic
                             {
                                 dt = DateTime.Now;
                                 string info;
-                                rep.MergeTemplate(templates, out info);
+                                equip.MergeTemplate(templates, out info);
                                 t = DateTime.Now.Subtract(dt).TotalMilliseconds;
                                 txtEquip.Text += string.Format("\r\nMerge Templates concluido: {0} - Tempo de transmissão: {1:0.0}ms", info, t);
                                 dedo = 1;
