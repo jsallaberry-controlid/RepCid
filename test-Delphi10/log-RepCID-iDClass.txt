@@ -1,0 +1,117 @@
+29/03/2016 17:19:56 URL: https://192.168.2.184/login.fcgi
+29/03/2016 17:19:57 Enviando dados de login...
+29/03/2016 17:19:59 LastResult: {"session":"xptMaIZDYExcFuEEBTfzTkPF"}
+29/03/2016 17:19:59 ConnectResult
+29/03/2016 17:19:59 END PARSE
+29/03/2016 17:19:59 OK
+29/03/2016 17:19:59 END
+29/03/2016 17:20:28 URL: https://192.168.2.184/login.fcgi
+29/03/2016 17:20:28 Enviando dados de login...
+29/03/2016 17:20:29 LastResult: {"session":"Hsb3Oy29H3KE9HIMsVanRjvx"}
+29/03/2016 17:20:29 ConnectResult
+29/03/2016 17:20:29 END PARSE
+29/03/2016 17:20:29 OK
+29/03/2016 17:20:29 END
+29/03/2016 17:20:50 URL: https://192.168.2.184/login.fcgi
+29/03/2016 17:20:50 Enviando dados de login...
+29/03/2016 17:20:51 LastResult: {"session":"M1hkUH033XTftKAAKSYJdPDh"}
+29/03/2016 17:20:51 ConnectResult
+29/03/2016 17:20:51 END PARSE
+29/03/2016 17:20:51 OK
+29/03/2016 17:20:51 END
+29/03/2016 17:21:58 URL: https://192.168.2.184/login.fcgi
+29/03/2016 17:21:58 Enviando dados de login...
+29/03/2016 17:21:59 LastResult: {"session":"apoCcIM17CefozhWIEqCBVGd"}
+29/03/2016 17:21:59 ConnectResult
+29/03/2016 17:21:59 END PARSE
+29/03/2016 17:21:59 OK
+29/03/2016 17:21:59 END
+30/03/2016 08:47:21 URL: https://192.168.2.184/login.fcgi
+30/03/2016 08:47:21 Enviando dados de login...
+30/03/2016 08:47:23 LastResult: {"session":"gmMOdRxcAUzcxSsev3lwPNgo"}
+30/03/2016 08:47:23 ConnectResult
+30/03/2016 08:47:23 END PARSE
+30/03/2016 08:47:23 OK
+30/03/2016 08:47:23 END
+30/03/2016 08:54:19 URL: https://192.168.2.184/login.fcgi
+30/03/2016 08:54:19 Enviando dados de login...
+30/03/2016 08:54:21 LastResult: {"session":"L19RR1cxxTiMSH8NfFJeARsC"}
+30/03/2016 08:54:21 ConnectResult
+30/03/2016 08:54:21 END PARSE
+30/03/2016 08:54:21 OK
+30/03/2016 08:54:21 END
+30/03/2016 08:54:50 URL: https://192.168.2.184/login.fcgi
+30/03/2016 08:54:50 Enviando dados de login...
+30/03/2016 08:54:52 LastResult: {"session":"MKhqQaDuHmBqCsAdG3V5L4bW"}
+30/03/2016 08:54:52 ConnectResult
+30/03/2016 08:54:52 END PARSE
+30/03/2016 08:54:52 OK
+30/03/2016 08:54:52 END
+30/03/2016 09:02:09 URL: https://192.168.2.184/login.fcgi
+30/03/2016 09:02:09 Enviando dados de login...
+30/03/2016 09:02:10 LastResult: {"session":"d6IENzpj0wyDwoAwtFrcCSXj"}
+30/03/2016 09:02:10 ConnectResult
+30/03/2016 09:02:10 END PARSE
+30/03/2016 09:02:10 OK
+30/03/2016 09:02:10 END
+30/03/2016 09:02:32 URL: https://192.168.2.184/login.fcgi
+30/03/2016 09:02:32 Enviando dados de login...
+30/03/2016 09:02:34 LastResult: {"session":"d4qpe2mgenFBDMl1yPcwNgrQ"}
+30/03/2016 09:02:34 ConnectResult
+30/03/2016 09:02:34 END PARSE
+30/03/2016 09:02:34 OK
+30/03/2016 09:02:34 END
+30/03/2016 09:48:43 URL: https://192.168.2.184/login.fcgi
+30/03/2016 09:48:43 Enviando dados de login...
+30/03/2016 09:48:44 LastResult: {"session":"wFTgL8SgMkPDFmgbNUCjBW7M"}
+30/03/2016 09:48:44 ConnectResult
+30/03/2016 09:48:44 END PARSE
+30/03/2016 09:48:44 OK
+30/03/2016 09:48:44 END
+30/03/2016 09:48:45 URL: https://192.168.2.184/set_system_date_time.fcgi
+30/03/2016 09:48:45 Enviando: {"session":"wFTgL8SgMkPDFmgbNUCjBW7M","day":11,"hour":11,"minute":11,"month":11,"second":11,"year":11}
+30/03/2016 09:48:45 ERRO HTTP: The remote server returned an error: (500) Internal Server Error.
+   at System.Net.HttpWebRequest.GetResponse()
+   at Controlid.RestJSON.SendJson(String cIP, Object objSend, Type tpResult, String session)
+30/03/2016 09:48:45 {"error":"ano inválido","code":500}
+30/03/2016 09:49:37 URL: https://192.168.2.184/login.fcgi
+30/03/2016 09:49:37 Enviando dados de login...
+30/03/2016 09:49:38 LastResult: {"session":"fZ0HXbL2NXaGZ50t6j54XAQi"}
+30/03/2016 09:49:38 ConnectResult
+30/03/2016 09:49:38 END PARSE
+30/03/2016 09:49:38 OK
+30/03/2016 09:49:38 END
+30/03/2016 09:49:38 URL: https://192.168.2.184/set_system_date_time.fcgi
+30/03/2016 09:49:38 Enviando: {"session":"fZ0HXbL2NXaGZ50t6j54XAQi","day":11,"hour":11,"minute":11,"month":11,"second":11,"year":11}
+30/03/2016 09:49:39 ERRO HTTP: The remote server returned an error: (500) Internal Server Error.
+   at System.Net.HttpWebRequest.GetResponse()
+   at Controlid.RestJSON.SendJson(String cIP, Object objSend, Type tpResult, String session)
+30/03/2016 09:49:39 {"error":"ano inválido","code":500}
+30/03/2016 09:50:42 URL: https://192.168.2.184/login.fcgi
+30/03/2016 09:50:42 Enviando dados de login...
+30/03/2016 09:50:44 LastResult: {"session":"MqnOavpUtHzhN1RiQZAmdvKc"}
+30/03/2016 09:50:44 ConnectResult
+30/03/2016 09:50:44 END PARSE
+30/03/2016 09:50:44 OK
+30/03/2016 09:50:44 END
+30/03/2016 09:51:19 URL: https://192.168.2.184/login.fcgi
+30/03/2016 09:51:19 Enviando dados de login...
+30/03/2016 09:51:21 LastResult: {"session":"otciKrrkmVFFhj9vJXPGaiB7"}
+30/03/2016 09:51:21 ConnectResult
+30/03/2016 09:51:21 END PARSE
+30/03/2016 09:51:21 OK
+30/03/2016 09:51:21 END
+30/03/2016 09:54:19 URL: https://192.168.2.184/login.fcgi
+30/03/2016 09:54:19 Enviando dados de login...
+30/03/2016 09:54:21 LastResult: {"session":"hxMKDgGDEBo6oBQxYBd0dWWu"}
+30/03/2016 09:54:21 ConnectResult
+30/03/2016 09:54:21 END PARSE
+30/03/2016 09:54:21 OK
+30/03/2016 09:54:21 END
+30/03/2016 10:26:02 URL: https://192.168.2.184/login.fcgi
+30/03/2016 10:26:02 Enviando dados de login...
+30/03/2016 10:26:04 LastResult: {"session":"ITGeEFuFMQMadPUPQDCLKIZF"}
+30/03/2016 10:26:04 ConnectResult
+30/03/2016 10:26:04 END PARSE
+30/03/2016 10:26:04 OK
+30/03/2016 10:26:04 END
